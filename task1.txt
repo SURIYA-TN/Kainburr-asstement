@@ -1,0 +1,64 @@
+To implement a Java REST API with endpoints for searching, creating, and deleting server objects, we can use the Spring Boot framework and MongoDB database. Here's an example implementation:
+
+Set up MongoDB
+First, we need to set up MongoDB. We can use the Spring Data MongoDB library to interact with MongoDB in our Java application.
+
+Create a Server model
+We need to create a Server model class that defines the properties of a server object.
+
+kotlin
+Copy code
+package com.example.server;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "servers")
+public class Server {
+    @Id
+    private String id;
+    private String name;
+    private String language;
+    private String framework;
+
+    public Server(String name, String language, String framework) {
+        this.name = name;
+        this.language = language;
+        this.framework = framework;
+    }
+
+    // getters and setters
+}
+Create a ServerRepository
+We also need to create a ServerRepository interface that extends the MongoRepository interface to perform CRUD operations on the Server model.
+java
+Copy code
+package com.example.server;
+
+import java.util.List;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface ServerRepository extends MongoRepository<Server, String> {
+    List<Server> findByNameContaining(String name);
+}
+Create a ServerController
+Next, we need to create a ServerController class that defines the REST API endpoints for searching, creating, and deleting server objects.
+kotlin
+Copy code
+package com.example.server;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/servers")
+public class ServerController {
+    @Autowired
+    private ServerRepository serverRepository;
+
+    // GET all servers or a single server by id
+    @GetMapping
+    public ResponseEntity<List<Server>> getAllServers(@RequestParam(required
